@@ -10,7 +10,7 @@ CREATE TABLE Clientes (
 
 CREATE TABLE Cliente_Direcciones (
     id SERIAL PRIMARY KEY,
-    id_client INT NOT NULL REFERENCES public.clientes(id),
+    id_client INT NOT NULL REFERENCES Clientes(id),
     direccion VARCHAR(255) NOT NULL
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE Productos (
 
 CREATE TABLE Historial_Membresias (
     id SERIAL PRIMARY KEY,
-    id_client INT NOT NULL REFERENCES public.clientes(id),
+    id_client INT NOT NULL REFERENCES Clientes(id),
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL
 );
@@ -41,9 +41,9 @@ CREATE TABLE Estados (
 
 CREATE TABLE Pedidos (
     id SERIAL PRIMARY KEY,
-    id_cliente INT NOT NULL REFERENCES public.clientes(id),
-    id_direccion INT NOT NULL REFERENCES public.cliente_direcciones(id),
-    id_estado INT NOT NULL REFERENCES public.estados(id),
+    id_cliente INT NOT NULL REFERENCES Clientes(id),
+    id_direccion INT NOT NULL REFERENCES Cliente_Direcciones(id),
+    id_estado INT NOT NULL REFERENCES Estados(id),
     monto_total NUMERIC(8, 2) NOT NULL
         CHECK (monto_total >= 0) -- Evitar valores negativos
 );
@@ -51,8 +51,8 @@ CREATE TABLE Pedidos (
 
 CREATE TABLE Detalles_Pedido (
     id SERIAL PRIMARY KEY,
-    id_pedido INT NOT NULL REFERENCES public.pedidos(id),
-    id_producto INT NOT NULL REFERENCES public.productos(id),
+    id_pedido INT NOT NULL REFERENCES Pedidos(id),
+    id_producto INT NOT NULL REFERENCES Productos(id),
     cantidad INT NOT NULL,
     precio NUMERIC(8, 2) NOT NULL CHECK (precio >= 0) -- Evitar valores negativos
 );
@@ -61,7 +61,7 @@ CREATE TABLE Detalles_Pedido (
 
 CREATE TABLE Bitacora_Productos (
     id SERIAL PRIMARY KEY,
-    id_producto INT NOT NULL REFERENCES public.productos(id),
+    id_producto INT NOT NULL REFERENCES Productos(id),
     campo_modificado VARCHAR(50) NOT NULL, -- nombre, descripcion, cantidad, etc.
     valor_anterior VARCHAR(255) NOT NULL,
     valor_nuevo VARCHAR(255) NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE Bitacora_Productos (
 
 CREATE TABLE Bitacora_Inventario (
     id SERIAL PRIMARY KEY,
-    id_producto INT NOT NULL REFERENCES public.productos(id),
+    id_producto INT NOT NULL REFERENCES Productos(id),
     cantidad_antes INT NOT NULL,
     cantidad_despues INT NOT NULL,
     fecha_modificacion TIMESTAMP NOT NULL
@@ -80,8 +80,8 @@ CREATE TABLE Bitacora_Inventario (
 
 CREATE TABLE Historial_Estados_Pedido (
     id SERIAL PRIMARY KEY,
-    id_pedido INT NOT NULL REFERENCES public.pedidos(id),
-    id_estado_anterior INT NOT NULL REFERENCES public.estados(id),
-    id_estado_nuevo INT NOT NULL REFERENCES public.estados(id),
+    id_pedido INT NOT NULL REFERENCES Pedidos(id),
+    id_estado_anterior INT NOT NULL REFERENCES Estados(id),
+    id_estado_nuevo INT NOT NULL REFERENCES Estados(id),
     fecha_cambio TIMESTAMP NOT NULL
 );
